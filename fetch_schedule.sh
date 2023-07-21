@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # URL of the webpage containing the load shedding schedule
-URL="http://www.loadshedding.org/schedule"
+URL="https://www.ourpower.co.za/areas/city-of-cape-town/hout-bay?block=11"
 
 # Use curl to fetch the webpage
 curl -o load_shedding_schedule.html $URL

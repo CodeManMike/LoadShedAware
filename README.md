@@ -4,11 +4,11 @@ This project is a Linux server service script that fetches a load shedding sched
 
 ## Files
 
-- `fetch_schedule.sh`: Fetches the webpage containing the load shedding schedule.
-- `parse_schedule.py`: Parses the fetched webpage to extract the load shedding times.
-- `schedule_shutdown.sh`: Schedules a server shutdown 10 minutes before the actual load shedding time.
-- `send_notification.sh`: Sends a notification to your phone using the Pushbullet API.
-- `main.sh`: The main script that runs all the other scripts.
+- `fetch_schedule.sh`: Fetches the webpage containing the load shedding schedule and checks if the webpage was fetched successfully.
+- `parse_schedule.py`: Parses the fetched webpage to extract the load shedding times and converts the times to datetime objects.
+- `schedule_shutdown.sh`: Cancels any previously scheduled shutdown, schedules a new shutdown at the parsed times, and sends a notification about the new schedule.
+- `send_notification.sh`: Prepares the message based on the type of notification and sends the notification using the Pushbullet API.
+- `main.sh`: The main script that runs all the other scripts. It fetches the load shedding schedule, parses the schedule, schedules the shutdown, sends the notification, and checks if each step was successful.
 - `requirements.txt`: Contains the Python libraries required for the project.
 
 ## Requirements
@@ -22,34 +22,59 @@ This project is a Linux server service script that fetches a load shedding sched
 
 1. Clone the repository.
 2. Install the required Python libraries by running `pip install -r requirements.txt`.
-3. Replace `YOUR_PUSHBULLET_API_KEY` in `send_notification.sh` with your actual Pushbullet API key.
-
+3. Create a file called `config.sh` and add the following lines to it:
+    ```bash
+    #!/bin/bash
+    # Your Pushbullet API key
+    export API_KEY="YOUR_PUSHBULLET_API_KEY"
+    ```
+    Replace `YOUR_PUSHBULLET_API_KEY` with your actual Pushbullet API key.
+    You can dign up for this for free. just do a search for pushbullet.
 ## Usage
 
 Run the main script with `./main.sh`.
+
+To automate the script, add a cron job by running `crontab -e` and adding the following line:
+
+    ```bash
+    0 * * * * /path/to/main.sh
+    ```
+
+Now, your script will check the site every hour, update its scheduled shutdown, remove the old scheduled shutdown, and send a notification. It will also run as a service. Feel free to alter the timing.
+
+The basic format of a cron schedule expression consists of 5 fields, separated by spaces, in the following order:
+
+1. Minute (0 - 59)
+2. Hour (0 - 23)
+3. Day of the month (1 - 31)
+4. Month (1 - 12)
+5. Day of the week (0 - 7) (Sunday = 0 or 7)
+
+Each field can have a single value, a range of values (e.g., 1-5 for Monday to Friday), or an asterisk (which means "any value").
 
 ## Scripts
 
 ### fetch_schedule.sh
 
-This script fetches the webpage containing the load shedding schedule using curl.
+This script fetches the webpage containing the load shedding schedule using curl and checks if the webpage was fetched successfully.
 
 ### parse_schedule.py
 
-This Python script parses the fetched webpage to extract the load shedding times. It uses BeautifulSoup to parse the HTML and find the schedule.
+This Python script parses the fetched webpage to extract the load shedding times. It uses BeautifulSoup to parse the HTML and find the schedule. It then converts the times to datetime objects and subtracts 10 minutes.
 
 ### schedule_shutdown.sh
 
-This script schedules a server shutdown 10 minutes before the actual load shedding time. It uses the shutdown command in Linux to schedule the shutdown.
+This script cancels any previously scheduled shutdown and schedules a new shutdown at the parsed times. It also sends a notification about the new schedule and checks if the shutdown was scheduled successfully.
 
 ### send_notification.sh
 
-This script sends a notification to your phone using the Pushbullet API. It sends a POST request to the Pushbullet API with your message.
+This script prepares the message based on the type of notification and sends the notification using the Pushbullet API. It checks if the notification was sent successfully.
 
 ### main.sh
 
-This is the main script that runs all the other scripts. It first fetches the load shedding schedule, then parses the schedule, schedules the shutdown, and finally sends the notification.
+This is the main script that runs all the other scripts. It fetches the load shedding schedule, parses the schedule, schedules the shutdown, sends the notification, and checks if each step was successful.
 
 ## Note
 
 Please ensure that you have the necessary permissions to run the scripts and schedule a shutdown on your server.
+

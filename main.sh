@@ -1,6 +1,14 @@
 ```bash
 #!/bin/bash
 
+# Create a file called config.sh and add the following lines to it:
+# #!/bin/bash
+# Your Pushbullet API key
+# export API_KEY="YOUR_PUSHBULLET_API_KEY"
+
+# Import the API key
+source ./config.sh
+
 # Fetch the load shedding schedule
 echo "Fetching the load shedding schedule..."
 ./fetch_schedule.sh
@@ -11,6 +19,7 @@ then
     echo "Schedule fetched successfully."
 else
     echo "Failed to fetch schedule."
+    ./send_notification.sh "error" "Failed to fetch schedule."
     exit 1
 fi
 
@@ -24,6 +33,7 @@ then
     echo "Shutdown scheduled successfully."
 else
     echo "Failed to schedule shutdown."
+    ./send_notification.sh "error" "Failed to schedule shutdown."
     exit 1
 fi
 
