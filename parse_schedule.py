@@ -65,3 +65,4 @@ if __name__ == "__main__":
         print(next_shutdown_time.strftime("%H:%M"))
     else:
         print("No loadshedding scheduled today! YAY!")
+        
