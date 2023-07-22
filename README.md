@@ -78,3 +78,14 @@ This is the main script that runs all the other scripts. It fetches the load she
 
 Please ensure that you have the necessary permissions to run the scripts and schedule a shutdown on your server.
 
+## License
+
+This project is licensed under the terms of the MIT License. This means you can freely use, modify, distribute, and sell this software, as long as you include the original copyright notice and disclaimers. 
+
+In practice, this means that if you use this software in your own work, you need to acknowledge me, @CodeManMike, as the original author of the software.
+
+Here's an example of how you might do this:
+
+"This software uses code from the project Load Shedding Schedule Fetcher and Notifier by @CodeManMike (https://github.com/CodeManMike/LoadSheddingScheduleFetcherAndNotifier)."
+
+Remember, while this license allows you to freely use and modify the software, it comes with no warranties. I am not liable for anything that happens as a result of your use of this software.
