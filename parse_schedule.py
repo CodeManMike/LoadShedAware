@@ -1,12 +1,27 @@
 #!/usr/bin/env python3
 
-from bs4 import BeautifulSoup
+# Import necessary modules
 import datetime
 import re
+try:
+    from bs4 import BeautifulSoup
+except ImportError:
+    print("Module 'bs4' not found. Please install it using 'pip install beautifulsoup4' command.")
+    exit()
 
 def parse_schedule():
+    """
+    Parse the load shedding schedule from an HTML file.
+
+    This function reads an HTML file containing a load shedding schedule,
+    extracts the times of the shutdowns, and returns the next shutdown time.
+    If there is no next shutdown time, it returns None.
+
+    Returns:
+        datetime.datetime: The next shutdown time if it exists, otherwise None.
+    """
     # Open the HTML file
-    with open("load_shedding_schedule.html", "r") as f:
+    with open("load_shedding_schedule.html", "r", encoding='utf-8') as f:
         contents = f.read()
 
     # Create a BeautifulSoup object and specify the parser
@@ -21,10 +36,10 @@ def parse_schedule():
     # Convert the times to datetime objects and subtract 10 minutes
     shutdown_times = []
     for time in times:
-        start_time, end_time = time.split(' - ')
-        dt = datetime.datetime.strptime(start_time, "%H:%M")
-        dt -= datetime.timedelta(minutes=10)
-        shutdown_times.append(dt)
+        start_time, _ = time.split(' - ')
+        date_time = datetime.datetime.strptime(start_time, "%H:%M")
+        date_time -= datetime.timedelta(minutes=10)
+        shutdown_times.append(date_time)  # Append the date_time to shutdown_times list
 
     # Sort the shutdown times
     shutdown_times.sort()
@@ -46,3 +61,4 @@ if __name__ == "__main__":
         print(next_shutdown_time.strftime("%H:%M"))
     else:
         print("No loadshedding scheduled today! YAY!")
+
