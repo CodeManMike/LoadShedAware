@@ -42,4 +42,3 @@ if echo "$response" | grep -q "error"; then
     echo "Error in response: $response"
     exit 1
 fi
-

@@ -2,6 +2,7 @@
 
 from bs4 import BeautifulSoup
 import datetime
+import re
 
 def parse_schedule():
     # Open the HTML file
@@ -12,22 +13,36 @@ def parse_schedule():
     soup = BeautifulSoup(contents, 'html.parser')
 
     # Find the schedule on the webpage
-    schedule = soup.find(id="schedule")
+    schedule_text = soup.get_text()
 
-    # Extract the times from the schedule
-    times = schedule.find_all("time")
+    # Use regex to find the times
+    times = re.findall(r'\d{2}:\d{2} - \d{2}:\d{2}', schedule_text)
 
     # Convert the times to datetime objects and subtract 10 minutes
     shutdown_times = []
     for time in times:
-        dt = datetime.datetime.strptime(time.text, "%H:%M")
+        start_time, end_time = time.split(' - ')
+        dt = datetime.datetime.strptime(start_time, "%H:%M")
         dt -= datetime.timedelta(minutes=10)
         shutdown_times.append(dt)
 
-    # Return the shutdown times
-    return shutdown_times
+    # Sort the shutdown times
+    shutdown_times.sort()
+
+    # Get the current time
+    now = datetime.datetime.now()
+
+    # Find the next shutdown time
+    for time in shutdown_times:
+        if time > now:
+            return time
+
+    # If there is no next shutdown time, return None
+    return None
 
 if __name__ == "__main__":
-    shutdown_times = parse_schedule()
-    for time in shutdown_times:
-        print(time.strftime("%H:%M"))
+    next_shutdown_time = parse_schedule()
+    if next_shutdown_time is not None:
+        print(next_shutdown_time.strftime("%H:%M"))
+    else:
+        print("No loadshedding scheduled today! YAY!")
