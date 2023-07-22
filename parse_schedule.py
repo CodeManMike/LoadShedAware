@@ -1,13 +1,17 @@
 #!/usr/bin/env python3
+"""
+This module parses a load shedding schedule from an HTML file.
+"""
 
 # Import necessary modules
 import datetime
 import re
+import sys
 try:
     from bs4 import BeautifulSoup
 except ImportError:
     print("Module 'bs4' not found. Please install it using 'pip install beautifulsoup4' command.")
-    exit()
+    sys.exit()
 
 def parse_schedule():
     """
@@ -21,8 +25,8 @@ def parse_schedule():
         datetime.datetime: The next shutdown time if it exists, otherwise None.
     """
     # Open the HTML file
-    with open("load_shedding_schedule.html", "r", encoding='utf-8') as f:
-        contents = f.read()
+    with open("load_shedding_schedule.html", "r", encoding='utf-8') as file:
+        contents = file.read()
 
     # Create a BeautifulSoup object and specify the parser
     soup = BeautifulSoup(contents, 'html.parser')
@@ -61,4 +65,3 @@ if __name__ == "__main__":
         print(next_shutdown_time.strftime("%H:%M"))
     else:
         print("No loadshedding scheduled today! YAY!")
-
