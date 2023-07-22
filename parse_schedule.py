@@ -1,4 +1,3 @@
-```python
 #!/usr/bin/env python3
 
 from bs4 import BeautifulSoup
@@ -32,4 +31,3 @@ if __name__ == "__main__":
     shutdown_times = parse_schedule()
     for time in shutdown_times:
         print(time.strftime("%H:%M"))
-```
