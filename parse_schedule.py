@@ -34,22 +34,33 @@ def parse_schedule():
     # Find the schedule on the webpage
     schedule_text = soup.get_text()
 
+    # Use regex to find the dates
+    dates = re.findall(r'\d{2} \w+', schedule_text)
+
     # Use regex to find the times
     times = re.findall(r'\d{2}:\d{2} - \d{2}:\d{2}', schedule_text)
 
-    # Convert the times to datetime objects and subtract 10 minutes
+    # Get the current date and time
+    now = datetime.datetime.now()
+
+    # Initialize the current date
+    current_date = now.date()
+
+    # Convert the dates and times to datetime objects and subtract 10 minutes
     shutdown_times = []
-    for time in times:
+    for date, time in zip(dates, times):
+        # Update the current date if a new date is found
+        new_date = datetime.datetime.strptime(date + ' ' + str(now.year), "%d %B %Y").date()
+        if new_date != current_date:
+            current_date = new_date
+
         start_time, _ = time.split(' - ')
-        date_time = datetime.datetime.strptime(start_time, "%H:%M")
-        date_time -= datetime.timedelta(minutes=10)
-        shutdown_times.append(date_time)  # Append the date_time to shutdown_times list
+        date_time_obj = datetime.datetime.combine(current_date, datetime.datetime.strptime(start_time, "%H:%M").time())
+        date_time_obj -= datetime.timedelta(minutes=10)
+        shutdown_times.append(date_time_obj)  # Append the date_time_obj to shutdown_times list
 
     # Sort the shutdown times
     shutdown_times.sort()
-
-    # Get the current time
-    now = datetime.datetime.now()
 
     # Find the next shutdown time
     for time in shutdown_times:
@@ -62,7 +73,6 @@ def parse_schedule():
 if __name__ == "__main__":
     next_shutdown_time = parse_schedule()
     if next_shutdown_time is not None:
-        print(next_shutdown_time.strftime("%H:%M"))
+        print(next_shutdown_time.strftime("%Y-%m-%d %H:%M"))
     else:
         print("No loadshedding scheduled today! YAY!")
-        
