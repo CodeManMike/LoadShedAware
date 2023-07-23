@@ -55,7 +55,8 @@ def parse_schedule():
             current_date = new_date
 
         start_time, _ = time.split(' - ')
-        date_time_obj = datetime.datetime.combine(current_date, datetime.datetime.strptime(start_time, "%H:%M").time())
+        date_time_obj = datetime.datetime.combine(current_date, 
+        datetime.datetime.strptime(start_time, "%H:%M").time())
         date_time_obj -= datetime.timedelta(minutes=10)
         shutdown_times.append(date_time_obj)  # Append the date_time_obj to shutdown_times list
 
