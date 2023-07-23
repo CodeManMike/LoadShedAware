@@ -35,8 +35,11 @@ def parse_schedule():
     schedule_text = soup.get_text()
 
     # Use regex to find the dates
-    dates = re.findall(r'\d{2} \w+', schedule_text)
-
+    dates = re.findall(
+    r'\d{2} (?:January|February|March|April|May|June|July|August|'
+    r'September|October|November|December)', 
+    schedule_text
+    )
     # Use regex to find the times
     times = re.findall(r'\d{2}:\d{2} - \d{2}:\d{2}', schedule_text)
 
