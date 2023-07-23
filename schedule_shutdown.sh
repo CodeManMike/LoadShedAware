@@ -17,6 +17,7 @@ fi
 if [ "$shutdown_time" == "No loadshedding scheduled today! YAY!" ]
 then
     echo "$shutdown_time"
+    ./send_notification.sh "schedule" "$shutdown_time"
     exit 0
 fi
 
